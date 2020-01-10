@@ -13,5 +13,7 @@
 #include "framework.h"
 #include <afxcontrolbars.h>
 #include <afxsock.h>
+#include "CSocCom.h"
+#include "CSocServer.h"
 
 #endif //PCH_H
