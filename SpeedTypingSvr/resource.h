@@ -42,7 +42,6 @@
 #define IDC_BUTTON_MATCH                1027
 #define IDC_BUTTON_SCORE                1028
 #define IDC_BUTTON_INIT                 1029
-#define IDC_STATIC_TIME                 1030
 
 // Next default values for new objects
 // 
