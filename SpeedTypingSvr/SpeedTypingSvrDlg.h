@@ -38,4 +38,5 @@ public:
 	afx_msg void OnClickedButtonSolo();
 	afx_msg void OnClickedButtonMatch();
 	afx_msg void OnClickedButtonScore();
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
 };
