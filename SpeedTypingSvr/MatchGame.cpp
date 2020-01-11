@@ -16,7 +16,7 @@ MatchGame::MatchGame(CWnd* pParent /*=nullptr*/)
 	, m_strTyping(_T(""))
 	, m_strID(_T(""))
 	, m_strScore(_T("0점"))
-	, m_strConnect(_T(""))
+	, m_strConnect(_T("연결 안 됨"))
 {
 
 }
@@ -36,6 +36,7 @@ void MatchGame::DoDataExchange(CDataExchange* pDX)
 
 
 BEGIN_MESSAGE_MAP(MatchGame, CDialogEx)
+	ON_MESSAGE(UM_ACCEPT, (LRESULT(AFX_MSG_CALL CWnd::*)(WPARAM, LPARAM))OnAccept)
 END_MESSAGE_MAP()
 
 BOOL MatchGame::OnInitDialog()
@@ -58,23 +59,23 @@ BOOL MatchGame::OnInitDialog()
 
 // MatchGame 메시지 처리기
 
-LPARAM MatchGame::OnAccept(UINT wParam, LPARAM IParam)
-{
-	// 클라이언트에서 접속 요청이 왔을 때
-	m_strConnect = "연결됨";
-	m_bConnect = TRUE;
-
-	//통신용 소켓을 생성한 뒤
-	m_socCom = new CSocCom;
-	//서버소켓과 통신소켓을 연결한다.
-	m_socCom = m_socServer.GetAcceptSocCom();
-	m_socCom->Init(this->m_hWnd);
-
-	m_socCom->Send("접속성공", 256);
-
-	UpdateData(FALSE);
-	return LPARAM();
-}
+//LPARAM MatchGame::OnAccept(UINT wParam, LPARAM IParam)
+//{
+//	// 클라이언트에서 접속 요청이 왔을 때
+//
+//	//통신용 소켓을 생성한 뒤
+//	m_socCom = new CSocCom;
+//	//서버소켓과 통신소켓을 연결한다.
+//	m_socCom = m_socServer.GetAcceptSocCom();
+//	m_socCom->Init(this->m_hWnd);
+//
+//	m_socCom->Send("접속성공", 256);
+//	m_strConnect = "연결됨";
+//	m_bConnect = TRUE;
+//
+//	UpdateData(FALSE);
+//	return TRUE;
+//}
 
 LPARAM MatchGame::OnReceive(UINT wParam, LPARAM lParam)
 {
@@ -161,3 +162,23 @@ void MatchGame::SetGameEnd()
 }
 
 
+
+
+LPARAM MatchGame::OnAccept(UINT wParam, LPARAM lParam)
+{
+	// TODO: 여기에 구현 코드 추가.
+	// 클라이언트에서 접속 요청이 왔을 때
+
+	//통신용 소켓을 생성한 뒤
+	m_socCom = new CSocCom;
+	//서버소켓과 통신소켓을 연결한다.
+	m_socCom = m_socServer.GetAcceptSocCom();
+	m_socCom->Init(this->m_hWnd);
+
+	m_socCom->Send("접속성공", 256);
+
+	m_strConnect = "클라이언트 접속중";
+
+	UpdateData(FALSE);
+	return TRUE;
+}

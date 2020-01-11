@@ -22,7 +22,6 @@ void CSocServer::Init(HWND hWnd)
 {
 	// 메인 윈도우 포인터 받기
 	m_hWnd = hWnd;
-
 }
 
 
@@ -33,7 +32,6 @@ void CSocServer::OnAccept(int nErrorCode)
 	// 클라이언트가 접속하면 메인 윈도우에 접속메시지(UM_ACCEPT)를 보낸다.
 	Accept(m_socCom);
 	SendMessage(m_hWnd, UM_ACCEPT, 0, 0);
-
 	CSocket::OnAccept(nErrorCode);
 }
 

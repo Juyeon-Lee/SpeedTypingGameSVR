@@ -34,6 +34,10 @@ public:
 // 구현입니다.
 protected:
 	DECLARE_MESSAGE_MAP()
+public:
+//	afx_msg void OnAppCommand(CWnd* pWnd, UINT nCmd, UINT nDevice, UINT nKey);
+protected:
+//	afx_msg LRESULT OnAccept(WPARAM wParam, LPARAM lParam);
 };
 
 CAboutDlg::CAboutDlg() : CDialogEx(IDD_ABOUTBOX)
@@ -46,6 +50,7 @@ void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
+//	ON_WM_APPCOMMAND()
 END_MESSAGE_MAP()
 
 
@@ -193,3 +198,45 @@ void CSpeedTypingSvrDlg::OnClickedButtonScore()
 	//CScoreRef dlg;
 	//dlg.DoModal();
 }
+
+//LPARAM CSpeedTypingSvrDlg::OnAccept(UINT wParam, LPARAM lParam)
+//{
+//	// TODO: 여기에 구현 코드 추가.
+//	// 클라이언트에서 접속 요청이 왔을 때
+//
+//	//통신용 소켓을 생성한 뒤
+//	m_socCom = new CSocCom;
+//	//서버소켓과 통신소켓을 연결한다.
+//	m_socCom = m_socServer.GetAcceptSocCom();
+//	m_socCom->Init(this->m_hWnd);
+//
+//	m_socCom->Send("접속성공", 256);
+//
+//	MatchGame* m = new MatchGame;
+//	m->m_strConnect = "접속 성공";
+//
+//	UpdateData(FALSE);
+//	return TRUE;
+//}
+
+
+//void CAboutDlg::OnAppCommand(CWnd* pWnd, UINT nCmd, UINT nDevice, UINT nKey)
+//{
+//	// 이 기능을 사용하려면 Windows 2000 이상이 필요합니다.
+//	// _WIN32_WINNT 및 WINVER 기호는 0x0500보다 크거나 같아야 합니다.
+//	CDialogEx::OnAppCommand(pWnd, nCmd, nDevice, nKey);
+//}
+
+
+//afx_msg LRESULT CAboutDlg::OnAccept(WPARAM wParam, LPARAM lParam)
+//{
+//	return 0;
+//}
+
+
+//HRESULT CSpeedTypingSvrDlg::accDoDefaultAction(VARIANT varChild)
+//{
+//	// TODO: 여기에 특수화된 코드를 추가 및/또는 기본 클래스를 호출합니다.
+//
+//	return CDialogEx::accDoDefaultAction(varChild);
+//}

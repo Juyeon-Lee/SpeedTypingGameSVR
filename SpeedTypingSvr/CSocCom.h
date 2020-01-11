@@ -10,6 +10,7 @@ public:
 	void Init(HWND hWnd);
 	virtual void OnReceive(int nErrorCode);
 	HWND m_hWnd;
+	CWnd* m_cWnd;
 };
 
 

@@ -11,6 +11,8 @@ class CSpeedTypingSvrDlg : public CDialogEx
 // 생성입니다.
 public:
 	CSpeedTypingSvrDlg(CWnd* pParent = nullptr);	// 표준 생성자입니다.
+	CSocServer m_socServer; //서버용 소켓
+	CSocCom* m_socCom; //통신용 소켓
 
 // 대화 상자 데이터입니다.
 #ifdef AFX_DESIGN_TIME

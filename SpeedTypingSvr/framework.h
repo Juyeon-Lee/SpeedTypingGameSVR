@@ -16,6 +16,16 @@
 
 
 #include <afxdisp.h>        // MFC 자동화 클래스입니다.
+#include "afxsock.h"
+#include "CSocCom.h"
+
+#define UM_ACCEPT WM_USER+1
+#define UM_RECEIVE WM_USER+2
+
+#define SOC_GAMESTART 1
+#define SOC_GAMEEND 2
+#define SOC_TEXT 3
+#define SOC_CHECK 4
 
 
 

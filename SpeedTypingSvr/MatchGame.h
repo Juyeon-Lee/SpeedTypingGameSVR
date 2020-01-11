@@ -21,6 +21,7 @@ public:
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 지원입니다.
 	virtual BOOL OnInitDialog();
+	afx_msg LPARAM OnAccept(UINT wParam, LPARAM lParam);
 
 	DECLARE_MESSAGE_MAP()
 public:
@@ -32,11 +33,9 @@ public:
 	int m_wordNum = 15;
 	int m_myScore = 0;
 
-	LPARAM OnAccept(UINT wParam, LPARAM IParam);
 	LPARAM OnReceive(UINT wParam, LPARAM lParam);
 	BOOL IsGameEnd();
 	void EraseCheck(int wordIndex);
 	void SetGameEnd();
 	CString m_strConnect;
-	
 };
