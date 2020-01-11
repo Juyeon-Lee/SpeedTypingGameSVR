@@ -6,6 +6,7 @@
 #define IDD_ABOUTBOX                    100
 #define IDS_ABOUTBOX                    101
 #define IDD_SPEEDTYPINGSVR_DIALOG       102
+#define IDP_SOCKETS_INIT_FAILED         103
 #define IDR_MAINFRAME                   128
 #define IDD_DIALOG_MATCH                129
 #define IDD_DIALOG_LOGIN                131

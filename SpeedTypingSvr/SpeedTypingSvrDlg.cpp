@@ -11,6 +11,9 @@
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
+#include "CDlgLogin.h"
+#include "MatchGame.h"
+#include "SoloGame.h"
 
 
 // 응용 프로그램 정보에 사용되는 CAboutDlg 대화 상자입니다.
@@ -65,6 +68,10 @@ BEGIN_MESSAGE_MAP(CSpeedTypingSvrDlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
+	ON_BN_CLICKED(IDC_BUTTON_INIT, &CSpeedTypingSvrDlg::OnClickedButtonInit)
+	ON_BN_CLICKED(IDC_BUTTON_SOLO, &CSpeedTypingSvrDlg::OnClickedButtonSolo)
+	ON_BN_CLICKED(IDC_BUTTON_MATCH, &CSpeedTypingSvrDlg::OnClickedButtonMatch)
+	ON_BN_CLICKED(IDC_BUTTON_SCORE, &CSpeedTypingSvrDlg::OnClickedButtonScore)
 END_MESSAGE_MAP()
 
 
@@ -153,3 +160,36 @@ HCURSOR CSpeedTypingSvrDlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
+
+
+void CSpeedTypingSvrDlg::OnClickedButtonInit()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	CDlgLogin* dlg = new CDlgLogin;
+
+	dlg->DoModal();
+}
+
+
+void CSpeedTypingSvrDlg::OnClickedButtonSolo()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	SoloGame* dlg = new SoloGame;
+	dlg->DoModal();
+}
+
+
+void CSpeedTypingSvrDlg::OnClickedButtonMatch()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	MatchGame* dlg = new MatchGame;
+	dlg->DoModal();
+}
+
+
+void CSpeedTypingSvrDlg::OnClickedButtonScore()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	//CScoreRef dlg;
+	//dlg.DoModal();
+}

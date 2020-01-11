@@ -51,7 +51,8 @@ BOOL CSpeedTypingSvrApp::InitInstance()
 	InitCommonControlsEx(&InitCtrls);
 
 	CWinApp::InitInstance();
-
+	if (!AfxSocketInit())
+		return FALSE;
 
 	AfxEnableControlContainer();
 
