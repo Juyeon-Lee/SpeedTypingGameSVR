@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include "afxdb.h"
 
 
 // MatchGame 대화 상자
@@ -31,6 +32,39 @@ public:
 	CString m_strScore;
 	CString m_strConnect;
 
+//	CString m_word1;
+//	CString m_word10;
+//	CString m_word11;
+//	CString m_word12;
+//	CString m_word13;
+//	CString m_word14;
+//	CString m_word15;
+//	CString m_word2;
+//	CString m_word3;
+//	CString m_word4;
+//	CString m_word5;
+//	CString m_word6;
+//	CString m_word7;
+//	CString m_word8;
+//	CString m_word9;
+
+	BOOL m_bConnect;	// 다른 쪽과 접속했을 때 TRUE
+	int m_wordNum = 15;
+	int m_myScore = 0;
+	int endGameIndex;
+	CString score;
+
+	BOOL IsGameEnd();
+	int staticStringToIndex(CString str);
+	void EraseCheck(int wordIndex, BOOL itsMe);
+	void SetGameEnd();
+	void SendGame(CString strTmp);
+
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
+	void OnReceiveWord();
+	CDatabase m_db;
+	CRecordset* m_pRs;
+	CStringList m_string_list;
 	CString m_word1;
 	CString m_word10;
 	CString m_word11;
@@ -46,18 +80,6 @@ public:
 	CString m_word7;
 	CString m_word8;
 	CString m_word9;
-
-	BOOL m_bConnect;	// 다른 쪽과 접속했을 때 TRUE
-	int m_wordNum = 15;
-	int m_myScore = 0;
-	int endGameIndex;
-	CString score;
-
-	BOOL IsGameEnd();
-	int staticStringToIndex(CString str);
-	void EraseCheck(int wordIndex, BOOL itsMe);
-	void SetGameEnd();
-	void SendGame(CString strTmp);
-
-	virtual BOOL PreTranslateMessage(MSG* pMsg);
+	void OnViewWord();
+	void SetSendWordlist();
 };

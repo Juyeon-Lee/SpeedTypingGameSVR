@@ -184,21 +184,18 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="CDlgConnect.h" />
-    <ClInclude Include="CDlgLogin.h" />
     <ClInclude Include="CSocCom.h" />
     <ClInclude Include="CSocServer.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="MatchGame.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
-    <ClInclude Include="SoloGame.h" />
     <ClInclude Include="SpeedTypingSvr.h" />
     <ClInclude Include="SpeedTypingSvrDlg.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CDlgConnect.cpp" />
-    <ClCompile Include="CDlgLogin.cpp" />
     <ClCompile Include="CSocCom.cpp" />
     <ClCompile Include="CSocServer.cpp" />
     <ClCompile Include="MatchGame.cpp" />
@@ -208,7 +205,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="SoloGame.cpp" />
     <ClCompile Include="SpeedTypingSvr.cpp" />
     <ClCompile Include="SpeedTypingSvrDlg.cpp" />
   </ItemGroup>
