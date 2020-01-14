@@ -92,7 +92,7 @@ BOOL MatchGame::OnInitDialog()
 	// TODO:  여기에 추가 초기화 작업을 추가합니다.
 	endGameIndex = 0;
 	score = _T("");
-	m_strScore.Format("%d%s", m_myScore, "점");
+	m_strScore.Format("%d", m_myScore);
 	m_bConnect = FALSE;
 
 	GetDlgItem(IDC_EDIT_TYPING)->EnableWindow(FALSE);
