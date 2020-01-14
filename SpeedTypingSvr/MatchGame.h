@@ -82,4 +82,5 @@ public:
 	CString m_word9;
 	void OnViewWord();
 	void SetSendWordlist();
+//	afx_msg void OnStnClickedStaticScore2();
 };

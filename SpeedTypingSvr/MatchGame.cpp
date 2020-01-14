@@ -329,7 +329,7 @@ void MatchGame::EraseCheck(int wordIndex, BOOL itsMe)
 	if (itsMe)//내가 맞췄을 때만 내 점수 오른다.
 	{
 		m_myScore++; 
-		m_strScore.Format("%d%s", m_myScore, "점");
+		m_strScore.Format("%d", m_myScore);
 	}
 	
 	score.Format("%d", endGameIndex);
@@ -454,6 +454,7 @@ void MatchGame::OnViewWord()
 		m_word15 = m_string_list.GetAt(pos);
 		m_string_list.GetNext(pos);
 
+		UpdateData(FALSE);
 		break;
 	}
 }
@@ -465,13 +466,12 @@ void MatchGame::SetSendWordlist()
 	POSITION pos = m_string_list.GetHeadPosition();
 	CString object = "";
 	
-	for (int i = 0; i < m_string_list.GetSize; i++)
+	for (int i = 0; i < 14; i++)
 	{
-		if(i != m_string_list.GetSize)
-			object += m_string_list.GetAt(pos) + ',';
-		else
-			object += m_string_list.GetAt(pos);
+		object += m_string_list.GetAt(pos) + ',';
+		m_string_list.GetNext(pos);
 	}
+	object += m_string_list.GetAt(pos);
 
 	SendGame(object);
 }

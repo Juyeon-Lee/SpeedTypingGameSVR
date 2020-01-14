@@ -29,6 +29,7 @@
 #define IDC_STATIC_ID                   1017
 #define IDC_STATIC_SCORE                1018
 #define IDC_STATIC_STATUS               1019
+#define IDC_STATIC_SCORE2               1020
 #define IDC_STATIC_MAINID               1025
 #define IDC_BUTTON_SOLO                 1026
 #define IDC_BUTTON_MATCH                1027
