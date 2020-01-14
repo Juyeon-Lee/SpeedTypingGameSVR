@@ -47,21 +47,6 @@ void MatchGame::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_STATIC_ID, m_strID);
 	DDX_Text(pDX, IDC_STATIC_SCORE, m_strScore);
 	DDX_Text(pDX, IDC_STATIC_STATUS, m_strConnect);
-	//  DDX_Text(pDX, IDC_STATIC1, m_word1);
-	//  DDX_Text(pDX, IDC_STATIC10, m_word10);
-	//  DDX_Text(pDX, IDC_STATIC11, m_word11);
-	//  DDX_Text(pDX, IDC_STATIC12, m_word12);
-	//  DDX_Text(pDX, IDC_STATIC13, m_word13);
-	//  DDX_Text(pDX, IDC_STATIC14, m_word14);
-	//  DDX_Text(pDX, IDC_STATIC15, m_word15);
-	//  DDX_Text(pDX, IDC_STATIC2, m_word2);
-	//  DDX_Text(pDX, IDC_STATIC3, m_word3);
-	//  DDX_Text(pDX, IDC_STATIC4, m_word4);
-	//  DDX_Text(pDX, IDC_STATIC5, m_word5);
-	//  DDX_Text(pDX, IDC_STATIC6, m_word6);
-	//  DDX_Text(pDX, IDC_STATIC7, m_word7);
-	//  DDX_Text(pDX, IDC_STATIC8, m_word8);
-	//  DDX_Text(pDX, IDC_STATIC9, m_word9);
 	//  DDX_Control(pDX, IDC_STATIC1, word1);
 	//  DDX_Control(pDX, IDC_STATIC10, word10);
 	//  DDX_Control(pDX, IDC_STATIC11, word11);
@@ -364,7 +349,7 @@ void MatchGame::OnReceiveWord()
 	// TODO: 여기에 구현 코드 추가.
 	try
 	{
-		BOOL bOpen = m_db.OpenEx(_T("DRIVER={MYSQL ODBC 8.0 Unicode Driver};SERVER=127.0.0.1;PORT=3306;USER=root;PASSWORD=rhfro@@9515;DATABASE=typing;OPTION=3;STMT=set names euckr;"), CDatabase::noOdbcDialog);
+		BOOL bOpen = m_db.OpenEx(_T("DRIVER={MYSQL ODBC 8.0 Unicode Driver};SERVER=127.0.0.1;PORT=3306;USER=root;PASSWORD=root;DATABASE=typing;OPTION=3;STMT=set names euckr;"), CDatabase::noOdbcDialog);
 		if (bOpen)
 			m_pRs = new CRecordset(&m_db);
 
