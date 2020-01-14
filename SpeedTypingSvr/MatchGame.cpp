@@ -17,21 +17,21 @@ MatchGame::MatchGame(CWnd* pParent /*=nullptr*/)
 	, m_strID(_T(""))
 	, m_strScore(_T("0점"))
 	, m_strConnect(_T("연결 안 됨"))
-	, m_word1(_T("함함하다"))
-	, m_word10(_T("슬렉스"))
-	, m_word11(_T("트리트먼트"))
-	, m_word12(_T("치킨"))
-	, m_word13(_T("의자"))
-	, m_word14(_T("요거트"))
-	, m_word15(_T("수맥"))
-	, m_word2(_T("괴랄하다"))
-	, m_word3(_T("신선함"))
-	, m_word4(_T("고구마라떼"))
-	, m_word5(_T("카푸치노"))
-	, m_word6(_T("드라이기"))
-	, m_word7(_T("가방"))
-	, m_word8(_T("칠성"))
-	, m_word9(_T("장수돌침대"))
+	, m_word1(_T(""))
+	, m_word10(_T(""))
+	, m_word11(_T(""))
+	, m_word12(_T(""))
+	, m_word13(_T(""))
+	, m_word14(_T(""))
+	, m_word15(_T(""))
+	, m_word2(_T(""))
+	, m_word3(_T(""))
+	, m_word4(_T(""))
+	, m_word5(_T(""))
+	, m_word6(_T(""))
+	, m_word7(_T(""))
+	, m_word8(_T(""))
+	, m_word9(_T(""))
 {
 
 }
@@ -47,6 +47,36 @@ void MatchGame::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_STATIC_ID, m_strID);
 	DDX_Text(pDX, IDC_STATIC_SCORE, m_strScore);
 	DDX_Text(pDX, IDC_STATIC_STATUS, m_strConnect);
+	//  DDX_Text(pDX, IDC_STATIC1, m_word1);
+	//  DDX_Text(pDX, IDC_STATIC10, m_word10);
+	//  DDX_Text(pDX, IDC_STATIC11, m_word11);
+	//  DDX_Text(pDX, IDC_STATIC12, m_word12);
+	//  DDX_Text(pDX, IDC_STATIC13, m_word13);
+	//  DDX_Text(pDX, IDC_STATIC14, m_word14);
+	//  DDX_Text(pDX, IDC_STATIC15, m_word15);
+	//  DDX_Text(pDX, IDC_STATIC2, m_word2);
+	//  DDX_Text(pDX, IDC_STATIC3, m_word3);
+	//  DDX_Text(pDX, IDC_STATIC4, m_word4);
+	//  DDX_Text(pDX, IDC_STATIC5, m_word5);
+	//  DDX_Text(pDX, IDC_STATIC6, m_word6);
+	//  DDX_Text(pDX, IDC_STATIC7, m_word7);
+	//  DDX_Text(pDX, IDC_STATIC8, m_word8);
+	//  DDX_Text(pDX, IDC_STATIC9, m_word9);
+	//  DDX_Control(pDX, IDC_STATIC1, word1);
+	//  DDX_Control(pDX, IDC_STATIC10, word10);
+	//  DDX_Control(pDX, IDC_STATIC11, word11);
+	//  DDX_Control(pDX, IDC_STATIC12, word12);
+	//  DDX_Control(pDX, IDC_STATIC13, word13);
+	//  DDX_Control(pDX, IDC_STATIC14, word14);
+	//  DDX_Control(pDX, IDC_STATIC15, word15);
+	//  DDX_Control(pDX, IDC_STATIC2, word2);
+	//  DDX_Control(pDX, IDC_STATIC3, word3);
+	//  DDX_Control(pDX, IDC_STATIC4, word4);
+	//  DDX_Control(pDX, IDC_STATIC5, word5);
+	//  DDX_Control(pDX, IDC_STATIC6, word6);
+	//  DDX_Control(pDX, IDC_STATIC7, word7);
+	//  DDX_Control(pDX, IDC_STATIC8, word8);
+	//  DDX_Control(pDX, IDC_STATIC9, word9);
 	DDX_Text(pDX, IDC_STATIC1, m_word1);
 	DDX_Text(pDX, IDC_STATIC10, m_word10);
 	DDX_Text(pDX, IDC_STATIC11, m_word11);
@@ -114,6 +144,10 @@ afx_msg LRESULT MatchGame::OnAccept(WPARAM wParam, LPARAM lParam)
 	m_bConnect = TRUE;
 	GetDlgItem(IDC_EDIT_TYPING)->EnableWindow(TRUE);
 
+	OnReceiveWord();
+	OnViewWord();
+	SetSendWordlist();
+
 	UpdateData(FALSE);
 	return TRUE;
 }
@@ -135,7 +169,7 @@ afx_msg LRESULT MatchGame::OnReceive(WPARAM wParam, LPARAM lParam)
 
 	if (str == _T("접속성공"))
 	{
-		m_bConnect = TRUE;
+		m_bConnect = TRUE;		
 	}
 	else
 	{
@@ -295,7 +329,7 @@ void MatchGame::EraseCheck(int wordIndex, BOOL itsMe)
 	if (itsMe)//내가 맞췄을 때만 내 점수 오른다.
 	{
 		m_myScore++; 
-		m_strScore.Format("%d%s", m_myScore, "점");
+		m_strScore.Format("%d", m_myScore);
 	}
 	
 	score.Format("%d", endGameIndex);
@@ -323,3 +357,121 @@ void MatchGame::SendGame(CString strTmp)
 	m_socCom->Send(pTmp, 256);
 }
 
+
+
+void MatchGame::OnReceiveWord()
+{
+	// TODO: 여기에 구현 코드 추가.
+	try
+	{
+		BOOL bOpen = m_db.OpenEx(_T("DRIVER={MYSQL ODBC 8.0 Unicode Driver};SERVER=127.0.0.1;PORT=3306;USER=root;PASSWORD=rhfro@@9515;DATABASE=typing;OPTION=3;STMT=set names euckr;"), CDatabase::noOdbcDialog);
+		if (bOpen)
+			m_pRs = new CRecordset(&m_db);
+
+	}
+	catch (CException * e)
+	{
+		e->ReportError();
+	}
+
+	try {
+		CString sData(_T(""));
+		BOOL bOpen = m_pRs->Open(CRecordset::snapshot, "select context from word order by rand() limit 15;");
+
+		if (bOpen)
+		{
+			int iRow = 1;
+			BOOL bIsEOF = m_pRs->IsEOF();
+			DWORD dwSize = m_pRs->GetRowsetSize();
+			if (!bIsEOF)
+			{
+				for (m_pRs->MoveFirst(); !m_pRs->IsEOF(); m_pRs->MoveNext())
+				{
+					int iFieldCnt = m_pRs->GetODBCFieldCount();
+					for (int iCol = 0; iCol < iFieldCnt; iCol++)
+					{
+						CDBVariant sItem;
+						CString result;
+
+						m_pRs->SetAbsolutePosition(iRow);
+						m_pRs->GetFieldValue(iCol, sItem);
+
+						result = *sItem.m_pstringW;
+//						ar[iRow - 1][iCol] = result;
+						m_string_list.AddTail(result);
+//						MessageBox(ar[iRow - 1][iCol]);
+						UpdateData(FALSE);
+					}
+					iRow++;
+				}
+			}
+		}
+
+	}
+	catch (CException * e)
+	{
+		e->ReportError();
+	}
+	m_pRs->Close();
+	delete m_pRs;
+}
+
+void MatchGame::OnViewWord()
+{
+	// TODO: 여기에 구현 코드 추가.
+	POSITION pos = m_string_list.GetHeadPosition();
+
+	while (pos != NULL) {
+
+		m_word1 = m_string_list.GetAt(pos);
+		m_string_list.GetNext(pos);
+		m_word2 = m_string_list.GetAt(pos);
+		m_string_list.GetNext(pos);
+		m_word3 = m_string_list.GetAt(pos);
+		m_string_list.GetNext(pos);
+		m_word4 = m_string_list.GetAt(pos);
+		m_string_list.GetNext(pos);
+		m_word5 = m_string_list.GetAt(pos);
+		m_string_list.GetNext(pos);
+		m_word6 = m_string_list.GetAt(pos);
+		m_string_list.GetNext(pos);
+		m_word7 = m_string_list.GetAt(pos);
+		m_string_list.GetNext(pos);
+		m_word8 = m_string_list.GetAt(pos);
+		m_string_list.GetNext(pos);
+		m_word9 = m_string_list.GetAt(pos);
+		m_string_list.GetNext(pos);
+		m_word10 = m_string_list.GetAt(pos);
+		m_string_list.GetNext(pos);
+		m_word11 = m_string_list.GetAt(pos);
+		m_string_list.GetNext(pos);
+		m_word12 = m_string_list.GetAt(pos);
+		m_string_list.GetNext(pos);
+		m_word13 = m_string_list.GetAt(pos);
+		m_string_list.GetNext(pos);
+		m_word14 = m_string_list.GetAt(pos);
+		m_string_list.GetNext(pos);
+		m_word15 = m_string_list.GetAt(pos);
+		m_string_list.GetNext(pos);
+
+		UpdateData(FALSE);
+		break;
+	}
+}
+
+
+void MatchGame::SetSendWordlist()
+{
+	// TODO: 여기에 구현 코드 추가.
+	POSITION pos = m_string_list.GetHeadPosition();
+	CString object = "";
+	
+	for (int i = 0; i < 14; i++)
+	{
+		object += m_string_list.GetAt(pos) + ',';
+		m_string_list.GetNext(pos);
+	}
+	object += m_string_list.GetAt(pos);
+
+	SendGame(object);
+}
