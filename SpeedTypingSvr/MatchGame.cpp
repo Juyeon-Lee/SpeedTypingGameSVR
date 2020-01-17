@@ -1,5 +1,5 @@
 ﻿// MatchGame.cpp: 구현 파일
-//
+// 대결게임-서버
 
 #include "pch.h"
 #include "SpeedTypingSvr.h"
@@ -47,21 +47,6 @@ void MatchGame::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_STATIC_ID, m_strID);
 	DDX_Text(pDX, IDC_STATIC_SCORE, m_strScore);
 	DDX_Text(pDX, IDC_STATIC_STATUS, m_strConnect);
-	//  DDX_Control(pDX, IDC_STATIC1, word1);
-	//  DDX_Control(pDX, IDC_STATIC10, word10);
-	//  DDX_Control(pDX, IDC_STATIC11, word11);
-	//  DDX_Control(pDX, IDC_STATIC12, word12);
-	//  DDX_Control(pDX, IDC_STATIC13, word13);
-	//  DDX_Control(pDX, IDC_STATIC14, word14);
-	//  DDX_Control(pDX, IDC_STATIC15, word15);
-	//  DDX_Control(pDX, IDC_STATIC2, word2);
-	//  DDX_Control(pDX, IDC_STATIC3, word3);
-	//  DDX_Control(pDX, IDC_STATIC4, word4);
-	//  DDX_Control(pDX, IDC_STATIC5, word5);
-	//  DDX_Control(pDX, IDC_STATIC6, word6);
-	//  DDX_Control(pDX, IDC_STATIC7, word7);
-	//  DDX_Control(pDX, IDC_STATIC8, word8);
-	//  DDX_Control(pDX, IDC_STATIC9, word9);
 	DDX_Text(pDX, IDC_STATIC1, m_word1);
 	DDX_Text(pDX, IDC_STATIC10, m_word10);
 	DDX_Text(pDX, IDC_STATIC11, m_word11);
@@ -114,7 +99,7 @@ BOOL MatchGame::OnInitDialog()
 
 afx_msg LRESULT MatchGame::OnAccept(WPARAM wParam, LPARAM lParam)
 {
-	// 클라이언트에서 접속 요청이 왔을 때
+	// 클라이언트에서 접속 요청이 왔을 때 - 서버 측에만 존재
 
 	//통신용 소켓을 생성한 뒤
 	m_socCom = new CSocCom;
@@ -123,21 +108,21 @@ afx_msg LRESULT MatchGame::OnAccept(WPARAM wParam, LPARAM lParam)
 	m_socCom->Init(this->m_hWnd);
 
 	m_socCom->Send("접속성공", 256);
-	//	m_bConnect = TRUE;
 
 	m_strConnect = "접속중";
 	m_bConnect = TRUE;
-	GetDlgItem(IDC_EDIT_TYPING)->EnableWindow(TRUE);
+	GetDlgItem(IDC_EDIT_TYPING)->EnableWindow(TRUE); //입력창 활성화
 
-	OnReceiveWord();
-	OnViewWord();
-	SetSendWordlist();
+	OnReceiveWord();	// 데이터베이스에서 랜덤으로 단어 15개를 뽑아
+	OnViewWord();		// 자신의 뷰에 출력하고
+	SetSendWordlist();	// 클라이언트에도 단어들이 담긴 문자열을 보낸다.
 
 	UpdateData(FALSE);
 	return TRUE;
 }
 
-
+// 서버로부터 들어온 입력(char[256])을 처리한다.
+// 상대방이 단어를 지웠다 : 나도 같은 단어를 화면에서 지운다.
 afx_msg LRESULT MatchGame::OnReceive(WPARAM wParam, LPARAM lParam)
 {
 	// TODO: 여기에 구현 코드 추가.
@@ -148,15 +133,11 @@ afx_msg LRESULT MatchGame::OnReceive(WPARAM wParam, LPARAM lParam)
 	// 데이터를 pTmp에 받는다
 	m_socCom->Receive(pTmp, 256);
 
-	//일단은 헤더 없음
+	//헤더 없음
 
 	str.Format("%s", pTmp);
 
-	if (str == _T("접속성공"))
-	{
-		m_bConnect = TRUE;		
-	}
-	else
+	if (str.GetLength())
 	{
 		EraseCheck(atoi(str),FALSE);
 		if (IsGameEnd()) {
@@ -211,7 +192,7 @@ BOOL MatchGame::PreTranslateMessage(MSG* pMsg)
 }
 
 
-
+// 화면에 단어가 모두 지워졌는지를 이용하여 게임이 끝났는지 확인한다.
 BOOL MatchGame::IsGameEnd()
 {
 	if (endGameIndex >= 15)
@@ -220,6 +201,8 @@ BOOL MatchGame::IsGameEnd()
 		return FALSE;
 }
 
+//str 멤버변수 중에서 일치하는 static이 몇번째인지 알려준다.
+//일치하는 것이 없다면 0이 반환된다.
 int MatchGame::staticStringToIndex(CString str)
 {
 	if (str == m_word1)
@@ -256,6 +239,8 @@ int MatchGame::staticStringToIndex(CString str)
 		return 0;
 }
 
+// wordIndex로 해당하는 static을 지워준다.
+// itsMe : 자기 자신일 때만 m_myScore를 올려준다.
 void MatchGame::EraseCheck(int wordIndex, BOOL itsMe)
 {
 	switch (wordIndex)
