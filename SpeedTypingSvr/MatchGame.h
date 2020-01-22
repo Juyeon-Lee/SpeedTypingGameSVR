@@ -67,4 +67,5 @@ public:
 	CStringList m_string_list;
 	void OnViewWord();
 	void SetSendWordlist();
+	afx_msg void OnClose();
 };

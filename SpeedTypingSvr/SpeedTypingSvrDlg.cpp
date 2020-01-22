@@ -35,7 +35,7 @@ protected:
 public:
 //	afx_msg void OnAppCommand(CWnd* pWnd, UINT nCmd, UINT nDevice, UINT nKey);
 protected:
-//	afx_msg LRESULT OnAccept(WPARAM wParam, LPARAM lParam);
+
 };
 
 CAboutDlg::CAboutDlg() : CDialogEx(IDD_ABOUTBOX)
@@ -118,6 +118,11 @@ void CSpeedTypingSvrDlg::OnSysCommand(UINT nID, LPARAM lParam)
 		CAboutDlg dlgAbout;
 		dlgAbout.DoModal();
 	}
+	else if (nID == SC_CLOSE) //종료버튼 눌릴 시
+	{
+		OnClose();
+		//OnDestroy(); //창 종료
+	}
 	else
 	{
 		CDialogEx::OnSysCommand(nID, lParam);
@@ -160,9 +165,11 @@ HCURSOR CSpeedTypingSvrDlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
+// 대결 게임 버튼 클릭 시 이벤트 처리 함수
 void CSpeedTypingSvrDlg::OnClickedButtonMatch()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	// MatchGameDlg 팝업
 	MatchGame* dlg = new MatchGame;
 	dlg->DoModal();
 }

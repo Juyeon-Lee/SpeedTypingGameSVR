@@ -1,5 +1,5 @@
 ﻿// MatchGame.cpp: 구현 파일
-// 대결게임-서버
+//
 
 #include "pch.h"
 #include "SpeedTypingSvr.h"
@@ -46,7 +46,7 @@ void MatchGame::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_TYPING, m_strTyping);
 	DDX_Text(pDX, IDC_STATIC_ID, m_strID);
 	DDX_Text(pDX, IDC_STATIC_SCORE, m_strScore);
-	DDX_Text(pDX, IDC_STATIC_STATUS, m_strConnect);
+	DDX_Text(pDX, IDC_STATIC_STATUS, m_strConnect);	
 	DDX_Text(pDX, IDC_STATIC1, m_word1);
 	DDX_Text(pDX, IDC_STATIC10, m_word10);
 	DDX_Text(pDX, IDC_STATIC11, m_word11);
@@ -68,6 +68,7 @@ void MatchGame::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(MatchGame, CDialogEx)
 	ON_MESSAGE(UM_ACCEPT, &MatchGame::OnAccept)
 	ON_MESSAGE(UM_RECEIVE, &MatchGame::OnReceive)
+	ON_WM_CLOSE()
 END_MESSAGE_MAP()
 
 BOOL MatchGame::OnInitDialog()
@@ -87,7 +88,7 @@ BOOL MatchGame::OnInitDialog()
 	m_socServer.Create(5000);
 	//클라이언트의 접속을 기다린다.
 	m_socServer.Listen();
-	//소켓 클래스와 메인 윈도우(여기에서는 CChatServerDlg)를 연결한다.
+	//소켓 클래스와 윈도우(여기에서는 IDD_DIALOG_MATCH)를 연결한다.
 	m_socServer.Init(this->m_hWnd);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
@@ -95,11 +96,10 @@ BOOL MatchGame::OnInitDialog()
 }
 
 
-// MatchGame 메시지 처리기
-
+// 클라이언트로부터 접속 요청 처리 함수
 afx_msg LRESULT MatchGame::OnAccept(WPARAM wParam, LPARAM lParam)
 {
-	// 클라이언트에서 접속 요청이 왔을 때 - 서버 측에만 존재
+	// 클라이언트에서 접속 요청이 왔을 때
 
 	//통신용 소켓을 생성한 뒤
 	m_socCom = new CSocCom;
@@ -111,18 +111,19 @@ afx_msg LRESULT MatchGame::OnAccept(WPARAM wParam, LPARAM lParam)
 
 	m_strConnect = "접속중";
 	m_bConnect = TRUE;
-	GetDlgItem(IDC_EDIT_TYPING)->EnableWindow(TRUE); //입력창 활성화
 
-	OnReceiveWord();	// 데이터베이스에서 랜덤으로 단어 15개를 뽑아
-	OnViewWord();		// 자신의 뷰에 출력하고
-	SetSendWordlist();	// 클라이언트에도 단어들이 담긴 문자열을 보낸다.
+	// 단어 입력 부분 활성화
+	GetDlgItem(IDC_EDIT_TYPING)->EnableWindow(TRUE);
+
+	OnReceiveWord();	// DB로부터 랜덤한 단어를 다운받고, 리스트에 저장하는 함수
+	OnViewWord();		// 리스트에 저장된 단어들을 화면에 출력해주는 함수
+	SetSendWordlist();	// 클라이언트에게 동일한 단어들을 전송하는 함수
 
 	UpdateData(FALSE);
 	return TRUE;
 }
 
-// 서버로부터 들어온 입력(char[256])을 처리한다.
-// 상대방이 단어를 지웠다 : 나도 같은 단어를 화면에서 지운다.
+// 클라이언트로부터 들어온 응답값 처리하는 함수
 afx_msg LRESULT MatchGame::OnReceive(WPARAM wParam, LPARAM lParam)
 {
 	// TODO: 여기에 구현 코드 추가.
@@ -133,14 +134,17 @@ afx_msg LRESULT MatchGame::OnReceive(WPARAM wParam, LPARAM lParam)
 	// 데이터를 pTmp에 받는다
 	m_socCom->Receive(pTmp, 256);
 
-	//헤더 없음
-
+	//일단은 헤더 없음
 	str.Format("%s", pTmp);
 
-	if (str.GetLength())
+	if (str == _T("접속성공"))
 	{
-		EraseCheck(atoi(str),FALSE);
-		if (IsGameEnd()) {
+		m_bConnect = TRUE;		
+	}
+	else
+	{
+		EraseCheck(atoi(str),FALSE);	// 클라이언트가 맞춘 단어를 화면에서 제외
+		if (IsGameEnd()) {				// 클라이언트가 맞춘 단어가 마지막 단어일 경우 게임 종료
 			Sleep(1000);
 			SetGameEnd();
 		}
@@ -149,7 +153,7 @@ afx_msg LRESULT MatchGame::OnReceive(WPARAM wParam, LPARAM lParam)
 	return LPARAM();
 }
 
-
+// 특수키 입력 처리 함수
 BOOL MatchGame::PreTranslateMessage(MSG* pMsg)
 {
 	// TODO: 여기에 특수화된 코드를 추가 및/또는 기본 클래스를 호출합니다.
@@ -163,27 +167,26 @@ BOOL MatchGame::PreTranslateMessage(MSG* pMsg)
 		&& m_bConnect == TRUE)
 	{
 		// EDIT TEXT에서 문자열 획득 후, STATIC TEXT들과 비교하는 함수로 전달
-
 		GetDlgItemText(IDC_EDIT_TYPING, str);
 
+		// 획득한 문자열을 토대로 해당 문자가 있는 STATIC TEXT의 인덱스 획득
 		index = staticStringToIndex(str);
 
 		if (index) // 찾은 인덱스로 EraseCheck(인덱스)하면 단어가 삭제
 		{
 			EraseCheck(index, TRUE);
 			UpdateData(FALSE);
-			str.Format("%d", index);
-			SendGame(str);
+			str.Format("%d", index);	
+			SendGame(str);	// 클라이언트에게 서버가 맞춘 단어 전송
 		}
 
-		if (IsGameEnd())
-		{
-			/*str.Format("%s%d%s", "게임이 종료되었습니다!\n최종 스코어 :", m_myScore, "점");
-			MessageBox(str);*/
+		if (IsGameEnd())	// 서버 쪽에서 마지막 단어를 맞춘 경우 게임 종료
+		{		
 			Sleep(1000);
 			SetGameEnd();
 		}
 
+		// 엔터때마다 입력창 초기화
 		SetDlgItemText(IDC_EDIT_TYPING, "");
 		return true;
 	}
@@ -191,8 +194,7 @@ BOOL MatchGame::PreTranslateMessage(MSG* pMsg)
 	return CDialogEx::PreTranslateMessage(pMsg);
 }
 
-
-// 화면에 단어가 모두 지워졌는지를 이용하여 게임이 끝났는지 확인한다.
+// 서버와 클라이언트 통합해서 맞춘 단어의 수가 15 이상이면 TRUE 반환
 BOOL MatchGame::IsGameEnd()
 {
 	if (endGameIndex >= 15)
@@ -201,8 +203,7 @@ BOOL MatchGame::IsGameEnd()
 		return FALSE;
 }
 
-//str 멤버변수 중에서 일치하는 static이 몇번째인지 알려준다.
-//일치하는 것이 없다면 0이 반환된다.
+// 사용자가 입력한 단어를 화면에 존재하는 단어들과 비교 후, 일치하면 연결된 인덱스 반환
 int MatchGame::staticStringToIndex(CString str)
 {
 	if (str == m_word1)
@@ -239,8 +240,7 @@ int MatchGame::staticStringToIndex(CString str)
 		return 0;
 }
 
-// wordIndex로 해당하는 static을 지워준다.
-// itsMe : 자기 자신일 때만 m_myScore를 올려준다.
+// 해당하는 인덱스의 단어 화면에서 삭제
 void MatchGame::EraseCheck(int wordIndex, BOOL itsMe)
 {
 	switch (wordIndex)
@@ -305,7 +305,7 @@ void MatchGame::EraseCheck(int wordIndex, BOOL itsMe)
 	score.Format("%d", endGameIndex);
 }
 
-
+// 게임이 종료된 경우 스코어에 따라 승패 여부 결정
 void MatchGame::SetGameEnd()
 {
 	int competitorScore = 15 - m_myScore;
@@ -315,6 +315,7 @@ void MatchGame::SetGameEnd()
 		MessageBox("승");
 }
 
+// 클라이언트와의 통신
 void MatchGame::SendGame(CString strTmp)
 {
 	// 데이터 전송
@@ -327,11 +328,11 @@ void MatchGame::SendGame(CString strTmp)
 	m_socCom->Send(pTmp, 256);
 }
 
-
-
+// 게임이 시작될 때, DB로부터 랜덤한 15개의 단어를 받아서 리스트에 추가하는 함수
 void MatchGame::OnReceiveWord()
 {
 	// TODO: 여기에 구현 코드 추가.
+	// ODBC를 이용해서 DB와 연결
 	try
 	{
 		BOOL bOpen = m_db.OpenEx(_T("DRIVER={MYSQL ODBC 8.0 Unicode Driver};SERVER=127.0.0.1;PORT=3306;USER=root;PASSWORD=root;DATABASE=typing;OPTION=3;STMT=set names euckr;"), CDatabase::noOdbcDialog);
@@ -346,13 +347,14 @@ void MatchGame::OnReceiveWord()
 
 	try {
 		CString sData(_T(""));
+		// 랜덤한 15개의 단어를 받아오는 쿼리문 작성
 		BOOL bOpen = m_pRs->Open(CRecordset::snapshot, "select context from word order by rand() limit 15;");
 
 		if (bOpen)
 		{
 			int iRow = 1;
 			BOOL bIsEOF = m_pRs->IsEOF();
-			DWORD dwSize = m_pRs->GetRowsetSize();
+			//DWORD dwSize = m_pRs->GetRowsetSize();
 			if (!bIsEOF)
 			{
 				for (m_pRs->MoveFirst(); !m_pRs->IsEOF(); m_pRs->MoveNext())
@@ -367,9 +369,8 @@ void MatchGame::OnReceiveWord()
 						m_pRs->GetFieldValue(iCol, sItem);
 
 						result = *sItem.m_pstringW;
-//						ar[iRow - 1][iCol] = result;
-						m_string_list.AddTail(result);
-//						MessageBox(ar[iRow - 1][iCol]);
+						m_string_list.AddTail(result);	// 결과값으로 받아온 단어를 리스트에 추가
+
 						UpdateData(FALSE);
 					}
 					iRow++;
@@ -386,6 +387,7 @@ void MatchGame::OnReceiveWord()
 	delete m_pRs;
 }
 
+// 리스트에 저장된 단어들을 화면에 출력해주는 함수
 void MatchGame::OnViewWord()
 {
 	// TODO: 여기에 구현 코드 추가.
@@ -429,7 +431,7 @@ void MatchGame::OnViewWord()
 	}
 }
 
-
+// ',' 를 구분자로 삼아서 클라이언트에게 전달할 단어 리스트 작성하는 함수
 void MatchGame::SetSendWordlist()
 {
 	// TODO: 여기에 구현 코드 추가.
@@ -444,4 +446,18 @@ void MatchGame::SetSendWordlist()
 	object += m_string_list.GetAt(pos);
 
 	SendGame(object);
+}
+
+void MatchGame::OnClose()
+{
+	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
+	if (m_socCom) {
+		m_socCom->Close();
+	}
+	if (m_socServer)
+	{
+		m_socServer.Close();
+	}
+
+	CDialogEx::OnClose();
 }
